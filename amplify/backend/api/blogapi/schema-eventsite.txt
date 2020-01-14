@@ -1,0 +1,143 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    events: [Event!]!
+    invitedTo: [EventInvitees!]!
+    staffing: [EventStaff!]!
+}
+
+type Event {
+    id: ID!
+    createdAt: String
+    createdBy: User!
+    startDate: String
+    endDate: String
+    description: String
+    invited: [EventInvitees!]!
+    location: String!
+    preRendered: Boolean
+    private: Boolean!
+    staff: [EventStaff!]!
+    title: String!
+    updatedAt: String
+}
+
+type SiteMessage {
+    id: ID!
+    name: String!
+    email: String!
+    message: String!
+}
+
+type EventInvitees {
+    id: ID!
+    user: User!
+    event: Event!
+    going: Boolean
+}
+
+type EventStaff {
+    id: ID!
+    user: User!
+    event: Event!
+    categories: Categories!
+}
+
+type Categories {
+    id: ID!
+    category: Category!
+}
+
+type AuthPayload {
+    token: String
+}
+
+enum Category {
+    DECO
+    GENERAL_STAFF
+    HOST
+    MUSICAL_PERFORMER
+    PERFORMER
+    VISUAL_ARTIST
+    VOLUNTEER
+}
+
+type PageInfo {
+    endCursor: String!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+}
+
+type allEvents {
+    count: Int!
+    events: [Event!]!
+    pageInfo: PageInfo!
+    totalRecords: Int!
+}
+
+type Query {
+    allPrivateEvents(input: allEventsInput): allEvents!
+    allPublicEvents(input: allEventsInput): allEvents!
+    allMyEvents(input: allEventsInput): allEvents!
+    event(id: String): Event!
+    allUsers(first: Int, skip: Int, id: Int, email: String, name: String): [User!]!
+    user(id: String): User!
+}
+
+type Mutation {
+    createEvent(input: EventInput): Event!
+    updateEvent(id: ID!, input: EventInput): Event!
+    deleteEvent(id: ID!): Event!
+    createSiteMessage(name: String!, email:String!, message: String!): SiteMessage!
+    login(email: String!, password: String!): AuthPayload
+    signup(data: UserCreateInput): AuthPayload
+    updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+    updatePassword(id: ID!, password: String!): User!
+}
+
+input allEventsInput {
+    after: String
+    before: String
+    filter: String
+    first: Int
+    skip: Int
+    includePastEvents: Boolean
+    createdById: String
+    preRendered: Boolean
+    orderBy: [EventOrder]
+}
+
+input UserCreateInput {
+  password: String!
+  name: String!
+  email: String!
+}
+
+input UserUpdateInput {
+  password: String
+  name: String
+  email: String
+}
+
+input UserWhereUniqueInput {
+  id: ID
+  email: String
+}
+
+input EventInput {
+    description: String
+    endDate: String
+    location: String!
+    private: Boolean
+    startDate: String
+    title: String!
+}
+
+enum EventOrder {
+    createAt_ASC
+    createdAt_DESC
+    startDate_ASC
+    startDate_DESC
+}

@@ -1,0 +1,122 @@
+type Post @model {
+	id: ID!
+	postOwnerId: String!
+	postOwnerUsername: String!
+	postTitle: String!
+	postBody: String!
+	createdAt: String
+	comments: [Comment] @connection(name: "PostComments") #relationship
+	likes: [Like] @connection(name: "PostLikes")
+}
+ 
+type Comment @model {
+	id: ID!
+	commentOwnerId: String!
+	commentOwnerUsername: String!
+	post: Post @connection(name: "PostComments")
+	content: String!
+	createdAt: String!
+}
+ 
+type Like @model {
+	id: ID!
+	numberLikes: Int!
+	likeOwnerId: String!
+	likeOwnerUsername: String!
+	post: Post @connection(name: "PostLikes")
+}
+
+type test1 @model {
+	id: ID!
+	numberLikes: Int!
+	likeOwnerId: String!
+	likeOwnerUsername: String!
+	post: Post @connection(name: "PostLikes")
+}
+
+type User @model {
+    id: ID!
+    name: String!
+    email: String!
+    events: [Event!]!
+    invitedTo: [EventInvitees!]!
+    staffing: [EventStaff!]!
+}
+
+type Event @model {
+    id: ID!
+    createdAt: String
+    createdBy: User!
+    startDate: String
+    endDate: String
+    description: String
+    invited: [EventInvitees!]!
+    location: String!
+    preRendered: Boolean
+    private: Boolean!
+    staff: [EventStaff!]!
+    title: String!
+    updatedAt: String
+}
+
+type SiteMessage @model {
+    id: ID!
+    name: String!
+    email: String!
+    message: String!
+}
+
+type EventInvitees @model {
+    id: ID!
+    user: User!
+    event: Event!
+    going: Boolean
+}
+
+type EventStaff @model {
+    id: ID!
+    user: User!
+    event: Event!
+    categories: Categories!
+}
+
+type Categories @model {
+    id: ID!
+    category: Category!
+}
+
+type AuthPayload @model {
+    token: String
+}
+
+enum Category {
+    DECO
+    GENERAL_STAFF
+    HOST
+    MUSICAL_PERFORMER
+    PERFORMER
+    VISUAL_ARTIST
+    VOLUNTEER
+}
+
+type PageInfo @model {
+    endCursor: String!
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+}
+
+type allEvents @model {
+    count: Int!
+    events: [Event!]!
+    pageInfo: PageInfo!
+    totalRecords: Int!
+}
+
+
+enum EventOrder {
+    createAt_ASC
+    createdAt_DESC
+    startDate_ASC
+    startDate_DESC
+}
